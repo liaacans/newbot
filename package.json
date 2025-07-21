@@ -1,0 +1,20 @@
+{
+  "name": "whatsapp-bot-ai",
+  "version": "1.0.0",
+  "description": "WhatsApp Multi-Device Bot with AI and 6-digit Pairing Code",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.0",
+    "@whiskeysockets/baileys": "^6.4.0",
+    "awesome-phonenumber": "^3.6.0",
+    "axios": "^1.6.2",
+    "colors": "^1.4.0",
+    "pino": "^8.15.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
