@@ -1,0 +1,58 @@
+version: "1.0"
+
+build:
+  machine:
+    type: e2-highcpu-4
+    disk_size: 20
+
+  build_steps:
+    - name: Setup Node.js Environment
+      command: |
+        curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+        apt-get install -y nodejs
+        npm install -g pm2
+
+    - name: Install Dependencies
+      command: |
+        npm install
+
+    - name: Build Application (if needed)
+      command: |
+        if [ -f package.json ] && grep -q "\"build\"" package.json; then
+          npm run build
+        fi
+
+    - name: Setup Startup Script
+      command: |
+        cat > ecosystem.config.js << EOF
+        module.exports = {
+          apps: [{
+            name: "node-app",
+            script: "app.js",
+            instances: "max",
+            exec_mode: "cluster",
+            env: {
+              NODE_ENV: "production",
+              PORT: 8080
+            }
+          }]
+        };
+        EOF
+
+run:
+  machine:
+    type: e2-highcpu-2
+    disk_size: 10
+
+  start_command: pm2 start ecosystem.config.js && pm2 logs
+
+  ports:
+    - 8080
+
+  environment_variables:
+    NODE_ENV: production
+    PORT: 8080
+
+  persistent_storage:
+    - path: /app/logs
+      size: 5
